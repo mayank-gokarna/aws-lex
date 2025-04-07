@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Hansen CSF AI Assistant</title>
+
+    <!-- ✅ Favicon from S3 -->
+    <link rel="icon" type="image/png" href="https://csf-ai-hosting-amplify.s3.us-east-1.amazonaws.com/favicon-hansen.png">
+
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1493.0.min.js"></script>
     <style>
         body {
@@ -42,7 +46,7 @@
             padding: 20px;
             border-bottom: 1px solid #e0e0e0;
             position: relative;
-            background-image: url('https://csf-ai-hosting-amplify.s3.us-east-1.amazonaws.com/hansen3.png'); /* 👈 Replace this with your actual S3 image URL */
+            background-image: url('https://csf-ai-hosting-amplify.s3.us-east-1.amazonaws.com/hansen3.png');
             background-size: cover;
             background-position: center;
             color: #333;
@@ -53,7 +57,7 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(255, 255, 255, 0.7); /* Light overlay */
+            background-color: rgba(255, 255, 255, 0.7);
             z-index: 0;
         }
 
