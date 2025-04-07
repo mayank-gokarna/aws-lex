@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <h1>Lex Chatbot Demo</h1>
+    <h1>CSF AI Assistant</h1>
     <div id="chatBox"></div>
     <input type="text" id="userInput" placeholder="Type your message...">
     <button onclick="sendMessage()">Send</button>
@@ -37,7 +37,7 @@
 
             // Send to Lex
             lexRuntime.postText({
-                botAlias: 'TestBotAlias', // Your Lex bot alias (e.g., 'PROD' or 'TEST')
+                botAlias: 'PROD', // Your Lex bot alias (e.g., 'PROD' or 'TEST')
                 botName: 'csf-ai-assistant', // Your Lex bot name
                 inputText: userInput,
                 userId: 'web-user-001' // Any unique ID for the session
