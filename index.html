@@ -20,7 +20,7 @@
                 IdentityPoolId: 'us-east-1:24d02c56-a2b8-41d7-8565-6041a8440317'
             })
         });
-        const lexRuntime = new AWS.LexRuntime(); // or LexRuntimeV2()
+        const lexRuntime = new AWS.LexRuntimeV2(); // or LexRuntimeV2()
 
         function sendMessage() {
             const userInput = document.getElementById('userInput').value;
