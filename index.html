@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AWS Lex Chatbot UI</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px; }
+        #chatBox { height: 300px; border: 1px solid #ccc; padding: 10px; overflow-y: scroll; margin-bottom: 10px; }
+        #userInput { width: 70%; padding: 8px; }
+        button { padding: 8px 15px; }
+    </style>
+</head>
+<body>
+    <h1>Lex Chatbot Demo</h1>
+    <div id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        // Configure AWS SDK
+        AWS.config.update({
+            region: 'us-east-1', // Change to your Lex region
+            credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: '24d02c56-a2b8-41d7-8565-6041a8440317' // Replace with your Cognito Pool ID
+            })
+        });
+
+        const lexRuntime = new AWS.LexRuntime();
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (!userInput.trim()) return;
+
+            // Display user message
+            document.getElementById('chatBox').innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+            document.getElementById('userInput').value = '';
+
+            // Send to Lex
+            lexRuntime.postText({
+                botAlias: 'TestBotAlias', // Your Lex bot alias (e.g., 'PROD' or 'TEST')
+                botName: 'csf-ai-assistant', // Your Lex bot name
+                inputText: userInput,
+                userId: 'web-user-001' // Any unique ID for the session
+            }, (err, data) => {
+                if (err) {
+                    document.getElementById('chatBox').innerHTML += `<p><strong>Error:</strong> ${err.message}</p>`;
+                } else {
+                    document.getElementById('chatBox').innerHTML += `<p><strong>Bot:</strong> ${data.message}</p>`;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
