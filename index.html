@@ -4,12 +4,15 @@
     <title>Lex Chatbot</title>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1493.0.min.js"></script>
     <style>
-        #chatBox { height: 300px; border: 1px solid #ccc; overflow-y: scroll; }
+        #chatBox { height: 300px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; }
+        #userInput { width: 70%; padding: 8px; }
+        button { padding: 8px 15px; }
     </style>
 </head>
 <body>
+    <h1>Lex Chatbot</h1>
     <div id="chatBox"></div>
-    <input type="text" id="userInput">
+    <input type="text" id="userInput" placeholder="Type your message...">
     <button onclick="sendMessage()">Send</button>
 
     <script>
@@ -20,23 +23,38 @@
                 IdentityPoolId: 'us-east-1:24d02c56-a2b8-41d7-8565-6041a8440317'
             })
         });
-        const lexRuntime = new AWS.LexRuntimeV2(); // or LexRuntimeV2()
-
+        
+        // For Lex V2
+        const lexRuntime = new AWS.LexRuntimeV2();
+        
+        // Store session state
+        let sessionId = 'session-' + Math.random().toString(36).substring(2, 15);
+        
         function sendMessage() {
-            const userInput = document.getElementById('userInput').value;
-            document.getElementById('chatBox').innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+            const userInput = document.getElementById('userInput').value.trim();
+            if (!userInput) return;
             
-            lexRuntime.postText({
-                botAlias: 'PROD',
-                botName: 'csf-ai-assistant',
-                inputText: userInput,
-                userId: 'web-user-001'
-            }, (err, data) => {
+            document.getElementById('chatBox').innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+            document.getElementById('userInput').value = '';
+            
+            const params = {
+                botId: '0IG0AE1VVA', // REQUIRED for V2 - Find this in Lex console
+                botAliasId: 'PROD', // REQUIRED for V2 - Find this in Lex Alias
+                localeId: 'en_US', // Typically 'en_US'
+                sessionId: sessionId,
+                text: userInput
+            };
+            
+            lexRuntime.recognizeText(params, (err, data) => {
                 if (err) {
                     console.error("Lex error:", err);
-                    document.getElementById('chatBox').innerHTML += `<p><strong>Error:</strong> ${err.message}</p>`;
-                } else {
-                    document.getElementById('chatBox').innerHTML += `<p><strong>Bot:</strong> ${data.message}</p>`;
+                    document.getElementById('chatBox').innerHTML += 
+                        `<p><strong>Error:</strong> ${err.message}</p>`;
+                } else if (data.messages && data.messages.length > 0) {
+                    data.messages.forEach(msg => {
+                        document.getElementById('chatBox').innerHTML += 
+                            `<p><strong>Bot:</strong> ${msg.content}</p>`;
+                    });
                 }
             });
         }
